@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Survey</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        {{{body}}}
+    </div>
+    <script>
+        $(document).ready(function ()
+        {
+            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            $(".form-check-inline").on("click", function ()
+            {
+                $(this).addClass("checked");
+                $(this).siblings().removeClass("checked");
+            });
+            $("#submitBtn").on("click", function ()
+            {
+                const userRes = {};
+                const scores = [];
+                userRes.name = $(":text")[0].value;
+                userRes.photo = $(":text")[1].value;
+                for (let i = 0; i < $(".checked").length; i++)
+                {
+                    scores.push(parseInt($(".checked input")[i].value));
+                };
+                userRes.scores = scores;
+
+                console.log(userRes)
+                if (scores.length === 10)
+                {
+                    userRes.scoresTotal = scores.reduce(reducer);
+                    $.post("/api/friends", userRes).done(function (data)
+                    {
+                        window.open(data.url);
+                    });
+                }
+
+            });
+        });
+    </script>
+
+</body>
+
+</html>
